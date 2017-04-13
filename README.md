@@ -1,2 +1,72 @@
-# Callroulette
-calling
+Call Roulette
+=============
+
+Sample Rails 3 app using [call_center](https://github.com/zendesk/call_center)
+
+Overview
+--------
+
+Call Roulette is like Chat Roulette but with calls. People call in and are connected to random people. They can "next" their call buddy by pressing '*' until they've talked to their heart's content.
+
+Requirements
+------------
+
+This app requires that you have a [Twilio](http://twilio.com) account set up and you have its `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` set up in your environment variables.
+
+You will also need to set up a Twilio number that points to your app (being sure to replace call-roulette with the name of your Heroku app):
+
+    Request URL: http://call-roulette.herokuapp.com/calls/create
+    Fallback URL: http://call-roulette.herokuapp.com/calls/exception
+    Status Callback URL: http://call-roulette.herokuapp.com/calls/flow?event=hang_up
+
+Usage
+-----
+
+This app can be deployed to Heroku in the following steps:
+
+    # Cedar stack allows us to run multiple processes
+    heroku create --stack cedar
+
+    # First deploy
+    git push heroku master
+
+    # Set up required variables
+    heroku config:add TWILIO_ACCOUNT_SID=...
+    heroku config:add TWILIO_AUTH_TOKEN=...
+    heroku config:add TWILIO_TUNNEL_URL=http://name-of-app.herokuapp.com
+    heroku config:add CALL_ROULETTE_PHONE_NUMBER="(123) 456 7890"
+
+    # Start background process that routes calls
+    heroku scale web=1 clock=1
+
+Non-heroku deploys can just:
+
+    export=TWILIO_ACCOUNT_SID=...
+    export=TWILIO_AUTH_TOKEN=...
+    export=TWILIO_TUNNEL_URL=http://name-of-app.herokuapp.com
+    export=CALL_ROULETTE_PHONE_NUMBER="(123) 456 7890"
+
+    bundle install
+
+    bundle exec foreman start
+
+Call Flow (Clean)
+-----------------
+
+![State Diagram Clean](http://f.cl.ly/items/3D3Y0z2J1z1Y2F0t2n17/CallRouletteStateDiagramClean.png "State Diagram Clean")
+
+Call Flow (Full)
+----------------
+
+![State Diagram](http://f.cl.ly/items/0E1K0i040n0L132k1m0B/CallRouletteStateDiagram.png "State Diagram")
+
+## Copyright and license
+
+Copyright 2013 Zendesk
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
